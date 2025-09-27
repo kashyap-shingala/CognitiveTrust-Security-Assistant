@@ -1,94 +1,71 @@
-# CognitiveTrust-Security-Assistant
+# trusttrust README
 
-# 🛡️ CognitiveTrust Security Assistant for VS Code
+This is the README for your extension "trusttrust". After writing up a brief description, we recommend including the following sections.
 
- The **CognitiveTrust Security Assistant** is a Visual Studio Code extension built to integrate security directly into the development workflow, specifically targeting issues commonly introduced by AI code generation tools like GitHub Copilot.
+## Features
 
- It actively monitors Python code for common security anti-patterns using **Semgrep**, provides clear, actionable fix suggestions, and enables one-click application of these fixes, followed by an automatic re-scan.
+Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
 
----
+For example if there is an image subfolder under your extension project workspace:
 
-## 🌟 Features Overview
+\!\[feature X\]\(images/feature-x.png\)
 
-| Feature Category | Description | Status |
-| :--- | :--- | :--- |
-| **Code Scanning** |  Uses the Semgrep CLI to scan Python files upon save or open for security anti-patterns | **Implemented** |
-| **Security Detection** |  Focuses on Hardcoded Secrets and Missing Authorization Checks. | **Implemented** |
-| **Fix Suggestions** |  Displays suggestions inline or as popups (like linting warnings) for detected issues | **Implemented** |
-| **Auto-Fix** |  Provides one-click auto-replace functionality for at least one issue type (Hardcoded Secrets) | **Implemented** |
-| **Rescan After Fix** |  Automatically re-runs the security scan after applying a fix to confirm resolution. | **Implemented** |
-| **Metrics Tracking** |  Tracks and displays the total number of security fixes applied in the VS Code status bar (Optional Bonus Goal) | **Implemented** |
-| **Prompt Enrichment** | (Goal: Review/enhance developer prompts with security requirements)   | **To Be Implemented** |
+> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
----
+## Requirements
 
-## 🛠️ Setup and Installation
+If you have any requirements or dependencies, add a section describing those and how to install and configure them.
 
-### Prerequisites
+## Extension Settings
 
-1.  **VS Code:** Visual Studio Code installed (Tested with `^1.85.0`).
-2.  **Semgrep CLI:** The Semgrep command-line interface must be **installed globally** and accessible from your system's path, as the extension executes it as a subprocess (`exec(command, ...)`).
-3.  **Python:** The extension primarily targets Python files.
+Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
 
-### Installation Steps (For Developers)
+For example:
 
-1.  **Clone the Repository:**
-    ```bash
-    git clone [your-repo-url]
-    cd cognitive-trust-assistant
-    ```
-2.  **Install Node Dependencies:**
-    ```bash
-    npm install
-    ```
-3.  **Compile TypeScript to JavaScript:**
-    ```bash
-    npm run compile
-    ```
-4.  **Place Semgrep Rules:**
-    * Ensure the provided Semgrep rule files (`hardcoded_secrets.yml`, `missing_auth_check.yml`, etc.) are placed in a dedicated `/rules` directory within the extension's root folder, as the extension uses this path to run the scan.
-5.  **Run the Extension:**
-    * Open the project folder in VS Code.
-    * Go to the **Run and Debug** view (`Ctrl` + `Shift` + `D` or `Cmd` + `Shift` + `D`).
-    * Select the **"Launch Extension"** configuration and press $\text{F5}$ to open a new **Extension Development Host** window.
+This extension contributes the following settings:
+
+* `myExtension.enable`: Enable/disable this extension.
+* `myExtension.thing`: Set to `blah` to do something.
+
+## Known Issues
+
+Calling out known issues can help limit users opening duplicate issues against your extension.
+
+## Release Notes
+
+Users appreciate release notes as you update your extension.
+
+### 1.0.0
+
+Initial release of ...
+
+### 1.0.1
+
+Fixed issue #.
+
+### 1.1.0
+
+Added features X, Y, and Z.
 
 ---
 
-## 🧪 Usage and Testing
+## Following extension guidelines
 
-### Testing Vulnerability Detection
+Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
 
-Open the following files in the Extension Development Host to see the diagnostics appear:
+* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
 
-| Vulnerability Type | File | Insecure Code Snippet | Semgrep Rule Used |
-| :--- | :--- | :--- | :--- |
-| **Hardcoded Secret**  | `hardcoded_secret.py` | `API_KEY = "12345-abcdef-secret-key"` | `hardcoded-secret` |
-| **Missing Authorization** | `missing_auth.py` | `@app.route("/admin")\ndef admin_panel():` | `missing-authorization` |
+## Working with Markdown
 
-### Applying Quick Fixes
+You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
 
-1.  Place your cursor on a highlighted vulnerability (e.g., the `API_KEY` line).
-2.  Click the lightbulb icon or press `Ctrl + .` / `Cmd + .`.
-3.  **For Hardcoded Secret:** Select **"Fix: Replace secret with environment variable"**.
-    * **Action:** The code is replaced with `API_KEY = os.environ.get("API_KEY")`, and `import os` is added if needed.
-4.  **For Missing Authorization:** Select **"Fix: Add placeholder for authorization check"**.
-    * **Action:** A reminder comment is inserted inside the function body.
+* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
+* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
+* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
 
- In both cases, the custom command `trusttrust.applyFixAndRescan` is executed, which applies the change, **increments the fix counter** in the status bar, and instantly re-scans the file to confirm the diagnostic is cleared.
+## For more information
 
----
+* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
+* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
-## ⚙️ Core Components
-
-* **`extension.ts`**: The main entry point. It handles extension activation, registers event listeners for file operations (save/open), manages the `vscode.DiagnosticCollection`, and registers the custom command and Code Action Provider.
-* **`runSemgrepScan`**: Executes the Semgrep CLI subprocess and parses its JSON output into VS Code Diagnostics.
-* **`SecurityFixer` Class**: Implements `vscode.CodeActionProvider`. It intercepts diagnostics and provides context-specific `QuickFix` actions, bundling the required code edits with the `trusttrust.applyFixAndRescan` command.
-* **Status Bar Item (Metrics)**: A dedicated `vscode.StatusBarItem` is initialized to display the counter for applied security fixes (e.g., `🛡️ 1 Fixes Applied`).
-* **`package.json`**: Defines the extension's metadata, activation events (`onLanguage:python`, `onStartupFinished`), and registers the custom command `trusttrust.applyFixAndRescan`.
-
----
-
-## 💡 Future Development (Scaling & Stretch Goals)
-
-1.  **OpenAI Refactoring Integration (Stretch Goal)**: Use the OpenAI API to offer more intelligent, context-aware code refactoring for insecure patterns, going beyond simple find-and-replace actions.
-2.  **Configuration and Scope:** Allow users to configure Semgrep rules, ignore paths, and enable/disable multi-file workspace scanning.
+**Enjoy!**

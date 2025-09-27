@@ -1,0 +1,12 @@
+rules:
+  - id: outdated-requests-library
+    patterns:
+      # This pattern looks for the exact string "requests==1.0.0"
+      - pattern: requests==1.0.0
+    message: "Outdated Library Detected: 'requests' version 1.0.0 has known vulnerabilities. Please upgrade to a newer version."
+    severity: WARNING
+    # We use 'generic' to allow this rule to scan any type of text file, like requirements.txt
+    languages: [generic]
+    metadata:
+      category: security
+      cwe: "CWE-937: Use of Outdated Components with Known Vulnerabilities"
